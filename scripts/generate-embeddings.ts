@@ -14,7 +14,6 @@ async function fetchJSON(url: string) {
 async function generate() {
   const results: PokemonEmbedding[] = [];
 
-  // ambil 151 pokemon pertama (cukup untuk showcase)
   for (let id = 1; id <= 151; id++) {
     console.log(`Processing Pokémon #${id}`);
 
@@ -26,7 +25,7 @@ async function generate() {
 
     const embedding = await embed(description);
 
-    const size = pokemon.height < 7 ? 'small' : pokemon.height < 14 ? 'medium-sized' : 'large';
+    const size = pokemon.height < 14 ? 'small' : 'big';
 
     results.push({
       id,
@@ -35,7 +34,7 @@ async function generate() {
       size,
       description,
       embedding,
-      sprites: pokemon.sprites.front_default,
+      sprites: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`,
     });
   }
 

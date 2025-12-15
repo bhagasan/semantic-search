@@ -6,7 +6,7 @@ import { PokemonEmbedding } from '@/lib/types';
 function parseQuery(q: string) {
   return {
     wantsWater: q.includes('water'),
-    wantsLarge: q.includes('large'),
+    wantsBig: q.includes('big'),
   };
 }
 
@@ -21,8 +21,8 @@ export async function POST(req: Request) {
       candidates = candidates.filter((p: PokemonEmbedding) => p.types.includes('water'));
     }
 
-    if (rules.wantsLarge) {
-      candidates = candidates.filter((p: PokemonEmbedding) => p.size === 'large');
+    if (rules.wantsBig) {
+      candidates = candidates.filter((p: PokemonEmbedding) => p.size === 'big');
     }
 
     const queryEmbedding = await embed(query);

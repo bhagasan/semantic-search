@@ -8,7 +8,7 @@ export function buildDescription(pokemon: Pokemon, species: Species): string {
   const height = pokemon.height;
   const weight = pokemon.weight;
 
-  const size = height < 7 ? 'small' : height < 14 ? 'medium-sized' : 'large';
+  const size = height < 14 ? 'small' : 'big';
 
   const habitat = species.habitat?.name ?? 'various environments';
   const shape = species.shape?.name ?? 'unknown shape';
