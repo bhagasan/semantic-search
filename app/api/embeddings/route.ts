@@ -1,6 +1,6 @@
 import docs from '@/data/docs.json';
-import { generateEmbedding } from '@/libs/embeddings';
-import { saveEmbedding } from '@/libs/vector-db';
+import { generateEmbedding } from '@/lib/embeddings';
+import { saveEmbedding } from '@/lib/vector-db';
 
 export async function POST() {
   for (const doc of docs) {

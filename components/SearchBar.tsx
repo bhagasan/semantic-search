@@ -11,9 +11,14 @@ export default function SearchBar({ onSearch }: { onSearch: (q: string) => void 
         className='border p-2 rounded w-full'
         placeholder='Search with AI...'
         value={query}
+        suppressHydrationWarning
         onChange={(e) => setQuery(e.target.value)}
       />
-      <button className='px-4 py-2 bg-black text-white rounded' onClick={() => onSearch(query)}>
+      <button
+        suppressHydrationWarning
+        className='px-4 py-2 bg-black text-white rounded'
+        onClick={() => onSearch(query)}
+      >
         Search
       </button>
     </div>

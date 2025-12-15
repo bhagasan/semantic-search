@@ -1,20 +1,31 @@
-import { generateEmbedding } from '@/libs/embeddings';
-import { searchVector } from '@/libs/vector-db';
+import data from '@/data/pokemon-embeddings.json';
+import { embed } from '@/lib/embedder';
+import { cosine } from '@/lib/cosine';
 
-export async function POST(req: Request) {
-  const { query } = await req.json();
+interface Pokemon {
+  vector: number[];
+  [key: string]: unknown;
+}
 
-  if (!query) {
-    return new Response(JSON.stringify({ error: 'Query is required' }), {
-      status: 400,
-    });
+const pokemonData = data as Pokemon[];
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get('q') || '';
+
+  if (!q.trim()) {
+    return Response.json({ results: [] });
   }
 
-  // Step 1: convert text to embedding
-  const queryEmbedding = await generateEmbedding(query);
+  const queryVector = await embed(q);
 
-  // Step 2: semantic search
-  const results = await searchVector(queryEmbedding);
+  const results = pokemonData
+    .map((p: Pokemon) => ({
+      ...p,
+      score: cosine(queryVector, p.vector),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
 
   return Response.json({ results });
 }
