@@ -1,7 +1,7 @@
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { buildDescription } from '../lib/description-builder';
-import { embed } from '../lib/embedder.js';
+import { embed } from '../lib/embedder';
 import { Pokemon, Species } from '../lib/types';
 
 const POKEMON_LIMIT = 300;

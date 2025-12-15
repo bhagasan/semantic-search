@@ -38,7 +38,9 @@ export default function Home() {
       <div className='mt-6 space-y-4'>
         {results.map((p: Pokemon) => (
           <div key={p.name} className='flex gap-4 border p-3 rounded'>
-            <Image src={p.sprite} width={64} height={64} alt='pokemon' />
+            <div className='shrink-0 w-16 h-16'>
+              <Image src={p.sprite} width={64} height={64} alt='pokemon' />
+            </div>
             <div>
               <h2 className='font-bold'>{p.name}</h2>
               <p className='text-sm opacity-80'>{p.description}</p>

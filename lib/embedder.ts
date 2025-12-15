@@ -1,8 +1,8 @@
 import { pipeline } from '@xenova/transformers';
 
-let embedder;
+let embedder: Awaited<ReturnType<typeof pipeline>> | null = null;
 
-export async function embed(text) {
+export async function embed(text: string): Promise<number[]> {
   if (!embedder) {
     embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
   }
