@@ -36,3 +36,13 @@ export type Species = {
   shape: PokemonShape | null;
   [key: string]: unknown;
 };
+
+export interface PokemonEmbedding {
+  id: number;
+  name: string;
+  types: string[];
+  size: 'small' | 'medium-sized' | 'large';
+  description: string;
+  sprites: PokemonSprites;
+  embedding: number[];
+}

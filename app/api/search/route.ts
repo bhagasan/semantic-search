@@ -1,36 +1,46 @@
 import data from '@/data/pokemon-embeddings.json';
 import { embed } from '@/lib/embedder';
-import { cosine } from '@/lib/cosine';
+import { cosineSimilarity } from '@/lib/similarity';
+import { PokemonEmbedding } from '@/lib/types';
 
-interface Pokemon {
-  vector: number[];
-  [key: string]: unknown;
+function parseQuery(q: string) {
+  return {
+    wantsWater: q.includes('water'),
+    wantsLarge: q.includes('large'),
+  };
 }
 
-const pokemonData = (data as Array<{ id: number; name: string; description: string; embedding: number[] }>).map(
-  (p) => ({
-    ...p,
-    vector: p.embedding,
-  }),
-);
+export async function POST(req: Request) {
+  try {
+    const { query } = await req.json();
+    const rules = parseQuery(query);
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const q = searchParams.get('q') || '';
+    let candidates: PokemonEmbedding[] = data as PokemonEmbedding[];
 
-  if (!q.trim()) {
-    return Response.json({ results: [] });
+    if (rules.wantsWater) {
+      candidates = candidates.filter((p: PokemonEmbedding) => p.types.includes('water'));
+    }
+
+    if (rules.wantsLarge) {
+      candidates = candidates.filter((p: PokemonEmbedding) => p.size === 'large');
+    }
+
+    const queryEmbedding = await embed(query);
+
+    const results = candidates
+      .map((p) => ({
+        ...p,
+        score: cosineSimilarity(queryEmbedding, p.embedding),
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+
+    return Response.json(results);
+  } catch (error) {
+    console.error('Search error:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-
-  const queryVector = await embed(q);
-
-  const results = pokemonData
-    .map((p: Pokemon) => ({
-      ...p,
-      score: cosine(queryVector, p.vector),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
-
-  return Response.json({ results });
 }

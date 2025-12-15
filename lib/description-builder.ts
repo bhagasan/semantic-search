@@ -2,7 +2,6 @@ import { Pokemon, PokemonAbility, PokemonType, Species } from './types';
 
 export function buildDescription(pokemon: Pokemon, species: Species): string {
   const name = pokemon.name;
-
   const types = pokemon.types.map((t: PokemonType) => t.type.name);
   const abilities = pokemon.abilities.map((a: PokemonAbility) => a.ability.name);
 

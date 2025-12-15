@@ -1,43 +1,46 @@
 import fs from 'fs';
-import fetch from 'node-fetch';
-import { buildDescription } from '../lib/description-builder';
+import path from 'path';
 import { embed } from '../lib/embedder';
-import { Pokemon, Species } from '../lib/types';
+import { buildDescription } from '../lib/description-builder';
+import { PokemonEmbedding, PokemonType } from '../lib/types';
 
-const POKEMON_LIMIT = 300;
+const OUTPUT = path.join(process.cwd(), 'data/pokemon-embeddings.json');
 
 async function fetchJSON(url: string) {
   const res = await fetch(url);
   return res.json();
 }
 
-async function main() {
-  const results = [];
+async function generate() {
+  const results: PokemonEmbedding[] = [];
 
-  for (let id = 1; id <= POKEMON_LIMIT; id++) {
+  // ambil 151 pokemon pertama (cukup untuk showcase)
+  for (let id = 1; id <= 151; id++) {
     console.log(`Processing Pokémon #${id}`);
 
-    const pokemon: Pokemon = (await fetchJSON(`https://pokeapi.co/api/v2/pokemon/${id}`)) as Pokemon;
+    const pokemon = await fetchJSON(`https://pokeapi.co/api/v2/pokemon/${id}`);
 
-    const species: Species = (await fetchJSON(`https://pokeapi.co/api/v2/pokemon-species/${id}`)) as Species;
+    const species = await fetchJSON(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
 
-    // 👉 INI BAGIAN PENTING
     const description = buildDescription(pokemon, species);
 
-    const vector = await embed(description);
+    const embedding = await embed(description);
+
+    const size = pokemon.height < 7 ? 'small' : pokemon.height < 14 ? 'medium-sized' : 'large';
 
     results.push({
       id,
       name: pokemon.name,
+      types: pokemon.types.map((t: PokemonType) => t.type.name),
+      size,
       description,
-      embedding: vector,
-      sprite: pokemon.sprites.front_default,
+      embedding,
+      sprites: pokemon.sprites.front_default,
     });
   }
 
-  fs.writeFileSync('./data/pokemon-embeddings.json', JSON.stringify(results, null, 2));
-
-  console.log('Embedding generation complete ✅');
+  fs.writeFileSync(OUTPUT, JSON.stringify(results, null, 2));
+  console.log('✅ Embeddings generated:', results.length);
 }
 
-main();
+generate();

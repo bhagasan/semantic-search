@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 interface Pokemon {
   name: string;
-  sprite: string;
+  sprites: string;
   description: string;
   score: number;
 }
@@ -14,9 +14,13 @@ export default function Home() {
   const [results, setResults] = useState<Pokemon[]>([]);
 
   async function search() {
-    const res = await fetch('/api/search?q=' + q);
+    const res = await fetch('/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q }),
+    });
     const data = await res.json();
-    setResults(data.results);
+    setResults(data);
   }
 
   return (
@@ -39,7 +43,7 @@ export default function Home() {
         {results.map((p: Pokemon) => (
           <div key={p.name} className='flex gap-4 border p-3 rounded'>
             <div className='shrink-0 w-16 h-16'>
-              <Image src={p.sprite} width={64} height={64} alt='pokemon' />
+              <Image src={p.sprites} width={64} height={64} alt='pokemon' />
             </div>
             <div>
               <h2 className='font-bold'>{p.name}</h2>
