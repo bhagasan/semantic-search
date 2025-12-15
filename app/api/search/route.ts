@@ -7,7 +7,12 @@ interface Pokemon {
   [key: string]: unknown;
 }
 
-const pokemonData = data as Pokemon[];
+const pokemonData = (data as Array<{ id: number; name: string; description: string; embedding: number[] }>).map(
+  (p) => ({
+    ...p,
+    vector: p.embedding,
+  }),
+);
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
