@@ -26,7 +26,7 @@ async function generate() {
 
     const embedding = await embed(description);
 
-    const size = pokemon.height < 14 ? 'small' : 'big';
+    const size = pokemon.weight < 300 ? 'small' : pokemon.weight < 700 ? 'medium' : 'big';
     // bisa pake weight
 
     results.push({

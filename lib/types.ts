@@ -41,7 +41,7 @@ export interface PokemonEmbedding {
   id: number;
   name: string;
   types: string[];
-  size: 'small' | 'big';
+  size: 'small' | 'medium' | 'big';
   description: string;
   sprites: string;
   embedding: number[];

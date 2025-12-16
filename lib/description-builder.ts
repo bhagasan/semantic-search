@@ -14,25 +14,30 @@ function buildTypeDescription(types: string[]) {
   return `a primarily ${primary}-type pokemon with secondary ${secondary.join(' and ')} characteristics`;
 }
 
+function buildSizeDescription(size: 'small' | 'medium' | 'big') {
+  if (size === 'small') return 'This is a notably small-sized pokemon with a compact body';
+  if (size === 'big') return 'This is a notably big-sized pokemon with a massive and imposing body';
+  return 'This pokemon has an average-sized body';
+}
+
 export function buildDescription(pokemon: Pokemon, species: Species): string {
   const name = pokemon.name;
   const types = pokemon.types.map((t: PokemonType) => t.type.name);
   const abilities = pokemon.abilities.map((a: PokemonAbility) => a.ability.name);
 
-  const height = pokemon.height;
+  // const height = pokemon.height;
   const weight = pokemon.weight;
   const typeDescription = buildTypeDescription(types);
 
-  const size = height < 14 ? 'small' : 'big';
+  const size = weight < 300 ? 'small' : weight < 700 ? 'medium' : 'big';
   // bisa pake weight
 
   const habitat = species.habitat?.name ?? 'various environments';
-  const shape = species.shape?.name ?? 'unknown shape';
+  // const shape = species.shape?.name ?? 'unknown shape';
 
   return `
       ${name} is ${typeDescription}.
-      It has a ${shape} body, a ${size} build, and weighs around ${weight}.
+      ${buildSizeDescription(size)}, and weighs around ${weight}.
       This pokemon is known for abilities such as ${abilities.join(', ')}.
-      ${name} is commonly found in ${habitat}.
-        `.trim();
+      ${name} is commonly found in ${habitat}.`.trim();
 }
