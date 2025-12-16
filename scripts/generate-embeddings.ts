@@ -5,6 +5,7 @@ import { buildDescription } from '../lib/description-builder';
 import { PokemonEmbedding, PokemonType } from '../lib/types';
 
 const OUTPUT = path.join(process.cwd(), 'data/pokemon-embeddings.json');
+const LIMIT = 151;
 
 async function fetchJSON(url: string) {
   const res = await fetch(url);
@@ -14,7 +15,7 @@ async function fetchJSON(url: string) {
 async function generate() {
   const results: PokemonEmbedding[] = [];
 
-  for (let id = 1; id <= 151; id++) {
+  for (let id = 1; id <= LIMIT; id++) {
     console.log(`Processing Pokémon #${id}`);
 
     const pokemon = await fetchJSON(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -26,6 +27,7 @@ async function generate() {
     const embedding = await embed(description);
 
     const size = pokemon.height < 14 ? 'small' : 'big';
+    // bisa pake weight
 
     results.push({
       id,

@@ -1,37 +1,18 @@
 import data from '@/data/pokemon-embeddings.json';
 import { embed } from '@/lib/embedder';
-import { cosineSimilarity } from '@/lib/similarity';
+import { parseQuery, rankPokemon } from '@/lib/ranking';
 import { PokemonEmbedding } from '@/lib/types';
-
-function parseQuery(q: string) {
-  return {
-    wantsWater: q.includes('water'),
-    wantsBig: q.includes('big'),
-  };
-}
 
 export async function POST(req: Request) {
   try {
     const { query } = await req.json();
     const rules = parseQuery(query);
 
-    let candidates: PokemonEmbedding[] = data as PokemonEmbedding[];
-
-    if (rules.wantsWater) {
-      candidates = candidates.filter((p: PokemonEmbedding) => p.types.includes('water'));
-    }
-
-    if (rules.wantsBig) {
-      candidates = candidates.filter((p: PokemonEmbedding) => p.size === 'big');
-    }
-
     const queryEmbedding = await embed(query);
 
-    const results = candidates
-      .map((p) => ({
-        ...p,
-        score: cosineSimilarity(queryEmbedding, p.embedding),
-      }))
+    const results = (data as PokemonEmbedding[])
+      .map((p) => rankPokemon(p, queryEmbedding, rules))
+      .filter((p): p is Exclude<typeof p, null> => p !== null)
       .sort((a, b) => b.score - a.score)
       .slice(0, 5);
 

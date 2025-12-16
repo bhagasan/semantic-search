@@ -30,7 +30,7 @@ export default function Home() {
       <input
         suppressHydrationWarning
         className='border p-2 rounded w-full'
-        placeholder='water pokemon has big size'
+        placeholder='a big water type pokemon'
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
