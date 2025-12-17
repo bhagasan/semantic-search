@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
-        pathname: '/PokeAPI/sprites/**',
+        hostname: 'cdn.myanimelist.net',
+        pathname: '/images/**',
       },
       {
         protocol: 'https',

@@ -46,3 +46,36 @@ export interface PokemonEmbedding {
   sprites: string;
   embedding: number[];
 }
+
+export interface AnimeTypes {
+  mal_id: number;
+  title: string;
+  url: string;
+  synopsis: string | null;
+  images: {
+    jpg: {
+      image_url: string;
+    };
+    webp: {
+      image_url: string;
+    };
+  };
+  genres: {
+    mal_id: number;
+    name: string;
+    url: string;
+  }[];
+}
+
+export interface AnimeEmbedding {
+  id: number;
+  title: string;
+  synopsis: string;
+  genreList: string[];
+  image: string;
+  embedding: number[];
+}
+
+export type RankedAnime = AnimeEmbedding & {
+  score: number;
+};

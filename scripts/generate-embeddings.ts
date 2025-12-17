@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { embed } from '../lib/embedder';
-import { buildDescription } from '../lib/description-builder';
-import { PokemonEmbedding, PokemonType } from '../lib/types';
+import { AnimeEmbedding, AnimeTypes } from '../lib/types';
+import { buildAnimeEmbeddingText } from '@/lib/description-builder';
 
-const OUTPUT = path.join(process.cwd(), 'data/pokemon-embeddings.json');
-const LIMIT = 151;
+const OUTPUT = path.join(process.cwd(), 'data/anime-embeddings.json');
+const LIMIT = 25;
 
 async function fetchJSON(url: string) {
   const res = await fetch(url);
@@ -13,30 +13,25 @@ async function fetchJSON(url: string) {
 }
 
 async function generate() {
-  const results: PokemonEmbedding[] = [];
+  const response = await fetchJSON(`https://api.jikan.moe/v4/top/anime?sfw=true&limit=${LIMIT}&filter=bypopularity`);
 
-  for (let id = 1; id <= LIMIT; id++) {
-    console.log(`Processing Pokémon #${id}`);
+  if (!response || !Array.isArray(response.data)) {
+    console.error('❌ Unexpected Jikan response:', response);
+    return;
+  }
 
-    const pokemon = await fetchJSON(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  const results: AnimeEmbedding[] = [];
 
-    const species = await fetchJSON(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
-
-    const description = buildDescription(pokemon, species);
-
-    const embedding = await embed(description);
-
-    const size = pokemon.weight < 300 ? 'small' : pokemon.weight < 700 ? 'medium' : 'big';
-    // bisa pake weight
+  for (const a of response.data as AnimeTypes[]) {
+    const embedding = await embed(buildAnimeEmbeddingText(a));
 
     results.push({
-      id,
-      name: pokemon.name,
-      types: pokemon.types.map((t: PokemonType) => t.type.name),
-      size,
-      description,
+      id: a.mal_id,
+      title: a.title,
+      synopsis: a.synopsis ?? '',
+      genreList: a.genres.map((g) => g.name),
+      image: a.images.webp.image_url,
       embedding,
-      sprites: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`,
     });
   }
 
