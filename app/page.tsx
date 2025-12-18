@@ -47,7 +47,7 @@ export default function Home() {
         <input
           suppressHydrationWarning
           className='border w-full border-gray-200 pr-10 outline-none rounded-xl px-4 leading-none h-12 focus:border-orange-400'
-          placeholder='anime about students training to become heroes'
+          placeholder='students training to become heroes'
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />

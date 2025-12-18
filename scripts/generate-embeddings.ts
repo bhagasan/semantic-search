@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { embed } from '../lib/embedder';
 import { AnimeEmbedding, AnimeTypes } from '../lib/types';
-import { buildAnimeEmbeddingText } from '@/lib/description-builder';
+import { buildAnimeEmbeddingText } from '@/lib/helper';
 
 const OUTPUT = path.join(process.cwd(), 'data/anime-embeddings.json');
 const LIMIT = 25;

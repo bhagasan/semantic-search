@@ -1,7 +1,18 @@
 import data from '@/data/anime-embeddings.json';
 import { embed } from '@/lib/embedder';
-import { rankAnime } from '@/lib/ranking';
+import { rankAnime } from '@/lib/helper';
 import { RankedAnime } from '@/lib/types';
+
+function normalizeAnimeQuery(query: string): string {
+  const q = query.toLowerCase();
+
+  // regex aman: whole word "anime"
+  const hasAnime = /\banime\b/.test(q);
+
+  if (hasAnime) return query;
+
+  return `${query} anime`;
+}
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +22,9 @@ export async function POST(req: Request) {
       return Response.json({ error: 'Query must be a non-empty string' }, { status: 400 });
     }
 
-    const queryEmbedding = await embed(body.query);
+    const { query } = body;
+    const normalizedQuery = normalizeAnimeQuery(query);
+    const queryEmbedding = await embed(normalizedQuery);
 
     if (!Array.isArray(data)) {
       throw new Error('Embedding data is not an array');
