@@ -40,40 +40,44 @@ export default function Home() {
   }, [q]);
 
   return (
-    <div className='max-w-lg mx-auto p-10'>
-      <h1 className='text-3xl font-bold mb-4 text-center'>Anime Semantic Search</h1>
+    <>
+      <div className='max-w-lg mx-auto p-10 '>
+        <h1 className='text-3xl font-bold mb-4 text-center'>Anime Semantic Search</h1>
 
-      <input
-        suppressHydrationWarning
-        className='border py-2 px-4 w-full rounded-full border-black/50'
-        placeholder='water pokemon that is small'
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-      />
+        <input
+          suppressHydrationWarning
+          className='border w-full border-gray-200 pr-10 outline-none rounded-xl px-4 leading-none h-12 focus:border-orange-400'
+          placeholder='anime about students training to become heroes'
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
 
-      {loading && <div className='text-sm opacity-50 mt-2'>Searching...</div>}
-
-      <div className='mt-6 space-y-4'>
+        {loading && <div className='text-sm opacity-50 mt-2'>Searching...</div>}
+      </div>
+      <div className='max-w-4xl mx-auto p-4 grid grid-cols-5 mt-6 gap-4'>
         {results.map((p) => (
-          <div key={p.title} className='flex gap-4 border p-2 rounded-2xl border-black/50'>
-            <div className='shrink-0 w-36 h-36 bg-slate-100 rounded-xl p-2 flex items-center justify-center'>
-              <Image src={p.image} width={144} height={144} className='max-h-full' alt='anime' />
+          <div key={p.title} className='gap-4'>
+            <div className='shrink-0 relative w-full bg-slate-100 rounded-xl aspect-3/4'>
+              <Image src={p.image} fill className='object-cover' alt='anime' />
             </div>
 
-            <div className=' w-full  flex-1 flex flex-col  gap-y-2'>
-              <h2 className='font-bold capitalize text-2xl'>{p.title}</h2>
-              <div className='capitalize flex gap-x-0.5'>
+            <div className=' w-full  flex-1 flex flex-col gap-y-2 mt-1'>
+              <h2 className='font-medium capitalize text-sm'>{p.title}</h2>
+              <div className='capitalize flex flex-wrap gap-x-0.5'>
                 {p.genreList.map((d: string) => (
-                  <div className=' px-1 py-px text-xs rounded-md border border-black leading-none' key={d}>
+                  <div
+                    className='text-[11px] pr-1 mr-1 border-r border-r-white/50 opacity-50 last-of-type:border-r-0 leading-none mb-1'
+                    key={d}
+                  >
                     {d}
                   </div>
                 ))}
               </div>
-              <span className='text-xs opacity-50'>score: {p.score.toFixed(3)}</span>
+              {/* <span className='text-xs opacity-50'>score: {p.score.toFixed(3)}</span> */}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

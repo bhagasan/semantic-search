@@ -13,16 +13,20 @@ async function fetchJSON(url: string) {
 }
 
 async function generate() {
-  const response = await fetchJSON(`https://api.jikan.moe/v4/top/anime?sfw=true&limit=${LIMIT}&filter=bypopularity`);
+  const response = await fetchJSON(`https://api.jikan.moe/v4/top/anime?limit=${LIMIT}&filter=bypopularity&page=1`);
+  const response2 = await fetchJSON(`https://api.jikan.moe/v4/top/anime?limit=${LIMIT}&filter=bypopularity&page=2`);
+  const response3 = await fetchJSON(`https://api.jikan.moe/v4/top/anime?limit=${LIMIT}&filter=bypopularity&page=3`);
 
   if (!response || !Array.isArray(response.data)) {
     console.error('❌ Unexpected Jikan response:', response);
     return;
   }
 
+  const temp = [...response.data, ...response2.data, ...response3.data];
+
   const results: AnimeEmbedding[] = [];
 
-  for (const a of response.data as AnimeTypes[]) {
+  for (const a of temp as AnimeTypes[]) {
     const embedding = await embed(buildAnimeEmbeddingText(a));
 
     results.push({
