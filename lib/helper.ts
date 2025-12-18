@@ -38,3 +38,13 @@ export function buildAnimeEmbeddingText(a: AnimeTypes) {
     Themes: ${genres}, anime, japanese animation, animated series.
       `.trim();
 }
+
+export function normalizeAnimeQuery(query: string): string {
+  const q = query.toLowerCase();
+  const hasAnime = /\banime\b/.test(q);
+
+  if (hasAnime) return query;
+
+  return `${query} anime`;
+  // return `${query}. Japanese anime series with story and characters.`;
+}

@@ -1,18 +1,7 @@
 import data from '@/data/anime-embeddings.json';
 import { embed } from '@/lib/embedder';
-import { rankAnime } from '@/lib/helper';
+import { normalizeAnimeQuery, rankAnime } from '@/lib/helper';
 import { RankedAnime } from '@/lib/types';
-
-function normalizeAnimeQuery(query: string): string {
-  const q = query.toLowerCase();
-
-  // regex aman: whole word "anime"
-  const hasAnime = /\banime\b/.test(q);
-
-  if (hasAnime) return query;
-
-  return `${query} anime`;
-}
 
 export async function POST(req: Request) {
   try {

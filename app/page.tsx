@@ -54,7 +54,7 @@ export default function Home() {
 
         {loading && <div className='text-sm opacity-50 mt-2'>Searching...</div>}
       </div>
-      <div className='max-w-4xl mx-auto p-4 grid grid-cols-5 mt-6 gap-4'>
+      <div className='max-w-4xl mx-auto p-4 grid grid-cols-5 gap-4'>
         {results.map((p) => (
           <div key={p.title} className='gap-4'>
             <div className='shrink-0 relative w-full bg-slate-100 rounded-xl aspect-3/4'>
